@@ -56,11 +56,6 @@ app.get('/info', (req, res, next) => {
 
 })
 
-app.get('/', (req, res) => {
-    const info = `<h1>Hello!</h1>` 
-    return res.status(200).end(info)
-})
-
 app.delete('/api/persons/:id', (req, res, next) => {
     Person.findByIdAndRemove(req.params.id)
     .then(result => {
