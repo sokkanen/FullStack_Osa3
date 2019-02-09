@@ -1,4 +1,6 @@
-require('dotenv').config()
+if (process.env.NODE_ENV !== 'production'){
+    require('dotenv').config()
+}
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
@@ -69,10 +71,6 @@ app.post('/api/persons', (req, res, next) => {
     console.log(body.name)
     console.log(body.number)
 
-    if (body.name === "" || body.number === ""){
-        return res.status(400).end()
-    }
-
     const person = new Person({
         name: body.name,
         number: body.number
@@ -80,8 +78,9 @@ app.post('/api/persons', (req, res, next) => {
 
     person
     .save()
-    .then(savedPerson => {
-        res.json(savedPerson.toJSON())
+    .then(savedPerson => savedPerson.toJSON())
+    .then(savedAndFormattedPerson => {
+        res.json(savedAndFormattedPerson)
     })
     .catch(error => next(error))
 })
@@ -105,6 +104,8 @@ const errorHandler = (error, req, res, next) => {
     console.log(error.message)
     if (error.name === 'CastError' && error.kind == 'ObjectId'){
         return res.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError'){
+        return res.status(400).json({error: error.message})
     }
     next(error)
 }

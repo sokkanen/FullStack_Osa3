@@ -12,8 +12,16 @@ mongoose.connect(url, {useNewUrlParser: true})
     console.log('Failed to connect: ', error.message)
 })
 const personSchema = new mongoose.Schema({
-    name: String,
-    number: String
+    name:{
+        type: String,
+        minlength: [5, 'minimum length for name is 5 characters'],
+        required: true
+    },
+    number:{
+        type: String,
+        minlength: [5, 'minimum length for number is 5 characters'],
+        required: true
+    }
 })
 
 personSchema.set('toJSON', {
